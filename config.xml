@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<widget xmlns = "http://www.w3.org/ns/widgets"
+    xmlns:gap = "http://phonegap.com/ns/1.0"
+    id        = "WiaApp"
+    version   = "1.0.0">
+
+	<name>W.I.A App.</name>
+	
+	<creationDate>06.12.2012</creationDate>
+	<author>Behzad Farhanieh</author>
+	<copyright>(C) Copyright 2008 by Behzad Farhanieh. All rights reserved!</copyright>
+	<authorEmail>aariapoor@gmail.com</authorEmail>
+	<authorUrl>www.aariaboom.com</authorUrl>
+	<version>1.0</version>
+	
+	<description>
+	A simple application for wireless internet application assignment.
+	</description>
+
+	<files>
+    	<filename>index.html</filename>
+  	</files>
+	
+	<images>
+	    <filename>images/cam.jpg</filename>
+		<filename>images/camlib.jpg</filename>
+		<filename>images/camph.jpg</filename>
+		<filename>images/header.png</filename>
+		<filename>images/logo.jpg</filename>
+		<filename>images/minus.png</filename>
+		<filename>images/plus.png</filename>
+		<filename>images/search-but.png</filename>
+		<filename>images/sidemenu.png</filename>
+	</images>
+	
+	<css>
+    	<filename>css/style.css</filename>
+	</css>
+  
+</widget>
