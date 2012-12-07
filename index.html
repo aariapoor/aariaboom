@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+<!--
+##############################################
+# 	Design by Behzad Farhanieh				 #
+#	November 2012							 #
+#	Website: http://www.aariaboom.com/		 #
+#											 #
+#	Limkokwing University					 #
+#	Student ID: 110022603					 #
+#	Subject: Wireless Internet Application	 #
+##############################################
+-->
+	<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    	<title>W.I.A Native App.</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
+        
+        <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/phonegap-1.1.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
+        
+        <script type="text/javascript" charset="utf-8">
+      
+    var deviceReady = false;
+
+    /**
+     * Take picture with camera
+     */
+    function takePicture() {
+        navigator.camera.getPicture(
+            function(uri) {
+                var img = document.getElementById('camera_image');
+                img.style.visibility = "visible";
+                img.style.display = "block";
+                img.src = uri;
+                document.getElementById('camera_status').innerHTML = "Captured";
+            },
+            function(e) {
+                console.log("Error getting picture: " + e);
+                document.getElementById('camera_status').innerHTML = "Error getting picture.";
+            },
+            { quality: 50, destinationType: navigator.camera.DestinationType.FILE_URI});
+    };
+
+    /**
+     * Select picture from library
+     */
+    function selectPicture() {
+        navigator.camera.getPicture(
+            function(uri) {
+                var img = document.getElementById('camera_image');
+                img.style.visibility = "visible";
+                img.style.display = "block";
+                img.src = uri;
+                document.getElementById('camera_status').innerHTML = "Selected";
+            },
+            function(e) {
+                console.log("Error getting picture: " + e);
+                document.getElementById('camera_status').innerHTML = "Error getting picture.";
+            },
+            { quality: 50, destinationType: navigator.camera.DestinationType.FILE_URI, sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY});
+    };
+    
+    /**
+     * Upload current picture
+     */
+    function uploadPicture() {
+    	
+    	// Get URI of picture to upload
+        var img = document.getElementById('camera_image');
+        var imageURI = img.src;
+        if (!imageURI || (img.style.display == "none")) {
+            document.getElementById('camera_status').innerHTML = "'Capture' or 'Select' then 'Upload'.";
+            return;
+        }
+        
+        // Verify server has been entered
+        server = document.getElementById('serverUrl').value;
+        if (server) {
+        	
+            // Specify transfer options
+            var options = new FileUploadOptions();
+            options.fileKey="file";
+            options.fileName=imageURI.substr(imageURI.lastIndexOf('/')+1);
+            options.mimeType="image/jpeg";
+            options.chunkedMode = false;
+
+            // Transfer picture to server
+            var ft = new FileTransfer();
+            ft.upload(imageURI, server, function(r) {
+                document.getElementById('camera_status').innerHTML = "Uploaded: "+r.bytesSent+" bytes.";            	
+            }, function(error) {
+                document.getElementById('camera_status').innerHTML = "Failed: Code = "+error.code;            	
+            }, options);
+        }
+    }
+
+    /**
+     * View pictures uploaded to the server
+     */
+    function viewUploadedPictures() {
+    	
+    	// Get server URL
+        server = document.getElementById('serverUrl').value;
+        if (server) {
+        	
+            // Get HTML that lists all pictures on server using XHR	
+            var xmlhttp = new XMLHttpRequest();
+
+            // Callback function when XMLHttpRequest is ready
+            xmlhttp.onreadystatechange=function(){
+                if(xmlhttp.readyState === 4){
+
+                    // HTML is returned, which has pictures to display
+                    if (xmlhttp.status === 200) {
+                    	document.getElementById('server_images').innerHTML = xmlhttp.responseText;
+                    }
+
+                    // If error
+                    else {
+                    	document.getElementById('server_images').innerHTML = "Error retrieving pictures from server.";
+                    }
+                }
+            };
+            xmlhttp.open("GET", server , true);
+            xmlhttp.send();       	
+        }	
+    }
+    
+    /**
+     * Function called when page has finished loading.
+     */
+    function init() {
+        document.addEventListener("deviceready", function() {deviceReady = true;}, false);
+        window.setTimeout(function() {
+            if (!deviceReady) {
+                alert("Error: PhoneGap did not initialize.  Demo will not run correctly.");
+            }
+        },2000);
+    }
+
+    </script>
+
+    </head>
+    
+    <body>
+    	<div class="wrapper">
+    <header class="logo"></header>
+    </div>
+		<nav class="header">
+			<div class="wrap top-bar">
+    			<button class="menu-show"><img src="images/plus.png" alt="plus"></button>
+	    		<button class="menu-hide"><img src="images/minus.png" alt="minus"></button>
+        	<nav class="search">
+        		<form>
+            		<input type="text">
+					<input type="submit" value="">
+	            </form>
+			</nav>
+        
+	        <div class="clear-both"></div>
+				<nav class="menu">
+            		<ul>
+                		<li><a href="#">تارنمای اصلی</a></li>
+	                	<li><a href="#">درباره ی ما</a></li>
+                        <li><a href="#">تماس با ما</a></li>
+    	            	<li><a href="#">ورود</a></li>
+            		</ul>
+				</nav>
+			</div>
+		</nav>
+		
+        <div class="wrapper">
+        	<div class="section">
+				<section class="content">
+					<div class="article">
+						<article class="post">
+                        	<div id="button">
+                				<div id="capture"><a onclick="takePicture();" value="Take Picture">Capture</a></div>
+				                <div id="lib"><a onclick="selectPicture();">Select</a></div>
+                				<div><a onclick="uploadPicture();">Upload</a></div>
+				                <div><a href="#">View</a></div>
+				                <div><a href="#">More</a></div>
+                				<div><a onclick="device.exitApp();">Exit</a></div>
+                            </div>
+								<div class="post-info">Info</div>
+						</article>
+					</div>
+				</section>
+        	</div>
+		</div>
+        
+		<div class="footer">
+            	<div class="wrap bot-bar">
+        			<div class="clear-both"></div>
+					<footer class="footer">
+						<div><b>
+	                            این کشور ما باید خرم شود باید بالنده شود - اوستا ، فروردین یشت ، بخش 22
+                        </b><div> 
+					    	    © 1385 - 1391 همه ی حقوق این تارنما وابسته به «انجمن آريابوم» است
+                        <br>
+					            برداشت نوشتارها یا بهره گیری از آن ها با یاد و نام نویسنده نوشتار و نشانی تارنما روا می باشد
+            			</div>
+						<div>
+			           			 &copy; 2012 &bull; پیکربندی بهزاد فرهانیه
+						</div>
+        			</footer>
+    			</div>
+		</div>
+    
+	<script type="text/javascript">
+		$('.menu').hide();
+		$('.menu-show').show();
+		$('.menu-hide').hide();
+		$('.menu-show').click(function(){
+			$('.menu-show').toggle();
+			$('.menu-hide').toggle();
+			$('.menu').slideDown();
+		});
+		$('.menu-hide').click(function(){
+			$('.menu-hide').toggle();
+			$('.menu-show').toggle();
+			$('.menu').slideUp();
+		});
+	</script>
+    
+    </body>
+</html>
